@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createCategory, listCategories } from "@/lib/supabase/queries";
+import { createCategory, listCategories, deleteCategory } from "@/lib/supabase/queries";
 import { useToast } from "@/components/ui/ToastProvider";
 
 type Row = { id: string; name: string; type: "income" | "expense"; active: boolean; created_at: string };
@@ -67,7 +67,7 @@ export default function Page() {
               </Select>
             </div>
             <div className="flex items-end">
-              <Button onClick={onCreate} className="bg-[--primary] text-[--primary-foreground] hover:opacity-90">Ajouter</Button>
+              <Button onClick={onCreate} className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]">Ajouter</Button>
             </div>
           </div>
         </CardContent>
@@ -81,6 +81,7 @@ export default function Page() {
               <th className="px-3 py-2 text-left">Type</th>
               <th className="px-3 py-2 text-left">Statut</th>
               <th className="px-3 py-2 text-left">Créée le</th>
+              <th className="px-3 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -90,6 +91,23 @@ export default function Page() {
                 <td className="px-3 py-2">{r.type === "income" ? "Entrée" : "Sortie"}</td>
                 <td className="px-3 py-2">{r.active ? "Active" : "Inactive"}</td>
                 <td className="px-3 py-2">{new Date(r.created_at).toLocaleDateString()}</td>
+                <td className="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    className="bg-red-100 text-red-700 hover:bg-red-200"
+                    onClick={async () => {
+                      if (!confirm(`Supprimer la catégorie \"${r.name}\" ?`)) return;
+                      const { error } = await deleteCategory(r.id);
+                      if (!error) {
+                        refresh();
+                      } else {
+                        alert(error.message);
+                      }
+                    }}
+                  >
+                    Supprimer
+                  </Button>
+                </td>
               </tr>
             ))}
             {rows.length === 0 && (

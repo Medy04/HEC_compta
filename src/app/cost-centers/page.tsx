@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createCostCenter, listCostCenters, listCostCenterSummary, listSpecialtiesByCostCenter, createSpecialty } from "@/lib/supabase/queries";
+import { createCostCenter, listCostCenters, listCostCenterSummary, listSpecialtiesByCostCenter, createSpecialty, deleteSpecialty } from "@/lib/supabase/queries";
 import { useToast } from "@/components/ui/ToastProvider";
 
 type Row = { id: string; name: string; code: string | null; created_at: string };
@@ -82,7 +82,7 @@ export default function Page() {
               <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="ex: CP" />
             </div>
             <div className="flex items-end">
-              <Button onClick={onCreate} className="bg-[--primary] text-[--primary-foreground] hover:opacity-90">Ajouter</Button>
+              <Button onClick={onCreate} className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]">Ajouter</Button>
             </div>
           </div>
         </CardContent>
@@ -180,7 +180,7 @@ export default function Page() {
                     listSpecialtiesByCostCenter(selCenter).then((res) => setSpecs((res.data as any) ?? []));
                   }
                 }}
-                className="px-3 py-2 rounded bg-[--primary] text-[--primary-foreground]"
+                className="px-3 py-2 rounded bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]"
               >
                 Ajouter
               </button>
@@ -191,12 +191,29 @@ export default function Page() {
               <thead className="bg-muted/40">
                 <tr>
                   <th className="px-3 py-2 text-left">Spécialité</th>
+                  <th className="px-3 py-2 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {specs.map((s) => (
                   <tr key={s.id}>
                     <td className="px-3 py-2">{s.name}</td>
+                    <td className="px-3 py-2 text-right">
+                      <button
+                        className="px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 text-sm"
+                        onClick={async () => {
+                          if (!confirm(`Supprimer la spécialité "${s.name}" ?`)) return;
+                          const { error } = await deleteSpecialty(s.id);
+                          if (!error) {
+                            listSpecialtiesByCostCenter(selCenter).then((res) => setSpecs((res.data as any) ?? []));
+                          } else {
+                            alert(error.message);
+                          }
+                        }}
+                      >
+                        Supprimer
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {selCenter && specs.length === 0 && (

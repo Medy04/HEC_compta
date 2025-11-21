@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { listSpecialtyTotalsForPeriod } from "@/lib/supabase/queries";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts";
 
 export function SpecialtySummary({ from, to }: { from: string; to: string }) {
   const [rows, setRows] = useState<any[]>([]);
@@ -29,12 +29,17 @@ export function SpecialtySummary({ from, to }: { from: string; to: string }) {
         <CardContent>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={rows.slice(0, 8).map((r) => ({ name: `${r.center} · ${r.name}`, solde: r.balance }))} margin={{ left: 6, right: 6, top: 10 }}>
+              <BarChart data={rows.slice(0, 8).map((r) => ({ name: `${r.center} · ${r.name}`, solde: Number(r.balance) || 0 }))} margin={{ left: 6, right: 6, top: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="name" className="fill-muted-foreground" tick={{ fontSize: 10 }} />
                 <YAxis className="fill-muted-foreground" />
                 <Tooltip />
-                <Bar dataKey="solde" fill="var(--primary)" />
+                <Bar dataKey="solde">
+                  {rows.slice(0, 8).map((r, idx) => {
+                    const v = Number(r.balance) || 0;
+                    return <Cell key={`cell-${idx}`} fill={v >= 0 ? "#34c759" : "#e31d1c"} />;
+                  })}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -62,7 +67,7 @@ export function SpecialtySummary({ from, to }: { from: string; to: string }) {
                     <td className="px-3 py-2">{r.center} · {r.name}</td>
                     <td className="px-3 py-2 text-right">{formatter.format(Number(r.income) || 0)}</td>
                     <td className="px-3 py-2 text-right">{formatter.format(Number(r.expense) || 0)}</td>
-                    <td className="px-3 py-2 text-right">{formatter.format(Number(r.balance) || 0)}</td>
+                    <td className={"px-3 py-2 text-right " + ((Number(r.balance) || 0) >= 0 ? "text-green-600" : "text-red-600")}>{formatter.format(Number(r.balance) || 0)}</td>
                   </tr>
                 ))}
                 {rows.length === 0 && (

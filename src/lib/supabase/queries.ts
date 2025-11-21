@@ -51,6 +51,11 @@ export async function createCategory(input: { name: string; type: "income" | "ex
   return await supabase.from("categories").insert({ name: input.name, type: input.type });
 }
 
+export async function deleteCategory(id: string) {
+  const supabase = createBrowser();
+  return await supabase.from("categories").delete().eq("id", id);
+}
+
 // COST CENTERS
 export async function listCostCenters() {
   const supabase = createBrowser();
@@ -113,6 +118,11 @@ export async function listSpecialtiesByCostCenter(costCenterId: string) {
 export async function createSpecialty(input: { name: string; cost_center_id: string }) {
   const supabase = createBrowser();
   return await supabase.from("specialties").insert({ name: input.name, cost_center_id: input.cost_center_id });
+}
+
+export async function deleteSpecialty(id: string) {
+  const supabase = createBrowser();
+  return await supabase.from("specialties").delete().eq("id", id);
 }
 
 export async function listSpecialtyTotalsForPeriod(from: string, to: string) {

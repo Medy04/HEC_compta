@@ -49,20 +49,20 @@ export function MonthlyChart({ from, to, mode }: { from: string; to: string; mod
             <AreaChart data={rows} margin={{ left: 6, right: 6, top: 10 }}>
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.1} />
+                  <stop offset="5%" stopColor="#34c759" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#34c759" stopOpacity={0.1} />
                 </linearGradient>
                 <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="var(--accent)" stopOpacity={0.1} />
+                  <stop offset="5%" stopColor="#e31d1c" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#e31d1c" stopOpacity={0.1} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
               <XAxis dataKey="month" className="fill-muted-foreground" />
               <YAxis className="fill-muted-foreground" />
               <Tooltip />
-              <Area type="monotone" dataKey="income" stroke="var(--primary)" fill="url(#colorIncome)" />
-              <Area type="monotone" dataKey="expense" stroke="var(--accent)" fill="url(#colorExpense)" />
+              <Area type="monotone" dataKey="income" stroke="#34c759" fill="url(#colorIncome)" />
+              <Area type="monotone" dataKey="expense" stroke="#e31d1c" fill="url(#colorExpense)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

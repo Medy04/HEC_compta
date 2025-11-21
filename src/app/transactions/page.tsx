@@ -38,7 +38,7 @@ export default function Page() {
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Transactions</h1>
         <div className="flex gap-2">
-          <button className="px-3 py-2 text-sm rounded-md bg-[--primary] text-[--primary-foreground]" onClick={() => setOpen(true)}>Nouvelle transaction</button>
+          <button className="px-3 py-2 text-sm rounded-md bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]" onClick={() => setOpen(true)}>Nouvelle transaction</button>
           <a className="px-3 py-2 text-sm rounded-md bg-[--accent] text-[--accent-foreground]" href="#">Importer CSV</a>
         </div>
       </header>

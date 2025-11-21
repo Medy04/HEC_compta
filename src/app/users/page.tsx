@@ -113,7 +113,7 @@ export default function Page() {
               </Select>
             </div>
             <div className="flex items-end">
-              <Button onClick={invite} className="bg-[--primary] text-[--primary-foreground] hover:opacity-90">Ajouter un utilisateur</Button>
+              <Button onClick={invite} className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]">Ajouter un utilisateur</Button>
             </div>
           </div>
         </CardContent>
