@@ -47,8 +47,8 @@
   --card-foreground: #ededed;
   --popover: #171717;
   --popover-foreground: #ededed;
-  --primary: #0d5bd7;
-  --primary-foreground: #171717;
+  --primary: #87CEEB;
+  --primary-foreground: #ffffff;
   --secondary: #6b7280;
   --secondary-foreground: #ededed;
   --muted: #6b7280;
@@ -66,8 +66,8 @@
   --chart-5: #3b82f6;
   --sidebar: #171717;
   --sidebar-foreground: #ededed;
-  --sidebar-primary: #0d5bd7;
-  --sidebar-primary-foreground: #ededed;
+  --sidebar-primary: #87CEEB;
+  --sidebar-primary-foreground: #171717;
   --sidebar-accent: #e31d1c;
   --sidebar-accent-foreground: #ededed;
   --sidebar-border: #d1d5db;

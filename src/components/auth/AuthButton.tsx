@@ -53,7 +53,7 @@ export function AuthButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="ml-auto bg-[--primary] text-[--primary-foreground]" size="sm">Se connecter</Button>
+        <Button className="ml-auto bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]" size="sm">Se connecter</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

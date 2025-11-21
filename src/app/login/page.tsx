@@ -46,7 +46,7 @@ export default function LoginPage() {
             <label className="block text-xs mb-1">Mot de passe</label>
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-[--primary] text-[--primary-foreground]">
+          <Button type="submit" disabled={loading} className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]">
             {loading ? "Connexion..." : "Se connecter"}
           </Button>
         </form>
