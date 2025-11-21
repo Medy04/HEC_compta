@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { getCurrentRole } from "@/lib/supabase/queries";
+import { useRouter } from "next/navigation";
 
 export function AuthButton() {
   const supabase = createClient();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,14 +38,14 @@ export function AuthButton() {
 
   async function signOut() {
     await supabase.auth.signOut();
-    window.location.reload();
+    router.replace("/login");
   }
 
   if (session) {
     return (
       <div className="flex items-center gap-2 ml-auto">
         <span className="text-xs opacity-80">{session.email} {role ? `· ${role}` : ""}</span>
-        <Button variant="secondary" size="sm" onClick={signOut}>Se déconnecter</Button>
+        <Button size="sm" onClick={signOut} className="bg-red-100 text-red-700 hover:bg-red-200">Se déconnecter</Button>
       </div>
     );
   }

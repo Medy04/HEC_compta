@@ -3,7 +3,7 @@ import { requireAdmin, fetchTransactionsForExport } from "@/lib/supabase/queries
 
 export async function GET(req: Request) {
   const admin = await requireAdmin();
-  if (!admin.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!admin.isAdmin) return NextResponse.redirect(new URL("/login", req.url));
   const { searchParams } = new URL(req.url);
   const month = searchParams.get("month") ?? undefined;
   const rows = await fetchTransactionsForExport({ month });

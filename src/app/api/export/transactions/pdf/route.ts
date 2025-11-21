@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import { requireAdmin, fetchTransactionsForExport } from "@/lib/supabase/queries-admin";
 import PDFDocument from "pdfkit";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   const admin = await requireAdmin();
-  if (!admin.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!admin.isAdmin) return NextResponse.redirect(new URL("/login", req.url));
   const { searchParams } = new URL(req.url);
   const month = searchParams.get("month") ?? undefined;
   const rows = await fetchTransactionsForExport({ month });
@@ -46,7 +49,7 @@ export async function GET(req: Request) {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=transactions${month ? "-" + month : ""}.pdf`,
+      "Content-Disposition": `inline; filename=transactions${month ? "-" + month : ""}.pdf`,
     },
   });
 }

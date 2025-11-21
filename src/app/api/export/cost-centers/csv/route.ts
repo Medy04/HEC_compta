@@ -3,7 +3,7 @@ import { requireAdmin, fetchCostCenterSummary, fetchCostCenterSummaryForPeriod }
 
 export async function GET(req: Request) {
   const admin = await requireAdmin();
-  if (!admin.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!admin.isAdmin) return NextResponse.redirect(new URL("/login", req.url));
   const { searchParams } = new URL(req.url);
   const from = searchParams.get("from") ?? undefined;
   const to = searchParams.get("to") ?? undefined;

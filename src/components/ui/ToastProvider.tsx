@@ -23,12 +23,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             className={
-              "rounded-md border px-3 py-2 shadow bg-white text-foreground dark:bg-zinc-900 " +
+              "rounded-md border px-3 py-2 shadow-sm " +
               (t.variant === "destructive"
-                ? "border-red-400"
+                ? "bg-red-50 border-red-300 text-red-800"
                 : t.variant === "success"
-                ? "border-emerald-400"
-                : "border-border")
+                ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                : "bg-white border-border text-foreground")
             }
           >
             {t.title && <div className="text-sm font-semibold">{t.title}</div>}

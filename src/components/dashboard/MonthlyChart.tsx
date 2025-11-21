@@ -44,7 +44,7 @@ export function MonthlyChart({ from, to, mode }: { from: string; to: string; mod
         <CardTitle className="text-sm text-muted-foreground">Entrées vs Sorties (6 derniers mois)</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-72">
+        <div className="h-72 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={rows} margin={{ left: 6, right: 6, top: 10 }}>
               <defs>

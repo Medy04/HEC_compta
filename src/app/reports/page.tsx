@@ -38,15 +38,15 @@ export default function Page() {
             </div>
             <div className="flex items-end gap-2">
               <Button asChild className="bg-[--primary] text-[--primary-foreground]" disabled={!isAdmin}>
-                <a href={`/api/export/transactions/csv${month ? `?month=${month}` : ""}`} target="_blank">Transactions CSV</a>
+                <a href={`/api/export/transactions/csv${month ? `?month=${month}` : ""}`} target="_blank" rel="noopener noreferrer">Exporter bilan CSV</a>
               </Button>
               <Button asChild className="bg-[--accent] text-[--accent-foreground]" disabled={!isAdmin}>
-                <a href={`/api/export/transactions/pdf${month ? `?month=${month}` : ""}`} target="_blank">Transactions PDF</a>
+                <a href={`/api/export/transactions/pdf${month ? `?month=${month}` : ""}`} target="_blank" rel="noopener noreferrer">Exporter bilan PDF</a>
               </Button>
             </div>
             <div className="flex items-end gap-2">
               <Button asChild className="bg-[--primary] text-[--primary-foreground]" disabled={!isAdmin}>
-                <a href={`/api/export/cost-centers/csv`} target="_blank">Synthèse centres CSV</a>
+                <a href={`/api/export/cost-centers/csv`} target="_blank" rel="noopener noreferrer">Exporter bilan Centres CSV</a>
               </Button>
             </div>
           </div>
