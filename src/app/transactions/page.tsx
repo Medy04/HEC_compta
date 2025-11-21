@@ -7,12 +7,15 @@ import { TransactionCreateDialog } from "@/components/transactions/TransactionCr
 import { listTransactions } from "@/lib/supabase/queries";
 import type { TransactionsFilterValue } from "@/components/filters/TransactionsFilter";
 import type { Transaction } from "@/lib/types";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Page() {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<TransactionsFilterValue>({ type: "all" });
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detail, setDetail] = useState<any | null>(null);
 
   async function refresh() {
     setLoading(true);
@@ -69,7 +72,15 @@ export default function Page() {
                 <td className="px-3 py-2">{r.cost_centers?.name ?? "—"}</td>
                 <td className="px-3 py-2 text-right">{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF", currencyDisplay: "code" }).format(r.amount)}</td>
                 <td className="px-3 py-2 text-center">
-                  <a className="text-[--primary]" href="#">Voir</a>
+                  <button
+                    className="text-[var(--primary)] hover:underline"
+                    onClick={() => {
+                      setDetail(r);
+                      setDetailOpen(true);
+                    }}
+                  >
+                    Voir
+                  </button>
                 </td>
               </tr>
             ))}
@@ -83,6 +94,50 @@ export default function Page() {
       </div>
 
       <TransactionCreateDialog open={open} onOpenChange={setOpen} onCreated={refresh} />
+
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Détail de la transaction</DialogTitle>
+          </DialogHeader>
+          {detail && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <div className="text-muted-foreground text-xs">Date</div>
+                <div>{new Date(detail.t_date).toLocaleDateString()}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Type</div>
+                <div>{detail.t_type === "income" ? "Entrée" : "Sortie"}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Montant</div>
+                <div>{new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF", currencyDisplay: "code" }).format(Number(detail.amount))}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Catégorie</div>
+                <div>{detail.categories?.name ?? "—"}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Centre de coûts</div>
+                <div>{detail.cost_centers?.name ?? "—"}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Spécialité</div>
+                <div>{detail.specialties?.name ?? "—"}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground text-xs">Mode de paiement</div>
+                <div>{detail.payment_method ?? "—"}</div>
+              </div>
+              <div className="md:col-span-2">
+                <div className="text-muted-foreground text-xs">Notes</div>
+                <div className="whitespace-pre-wrap break-words">{detail.notes ?? "—"}</div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

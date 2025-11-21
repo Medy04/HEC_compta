@@ -30,7 +30,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 shrink-0 border-r bg-white text-gray-900">
+    <aside className="hidden md:flex md:flex-col w-64 shrink-0 border-r bg-white text-gray-900 sticky top-0 h-dvh overflow-y-auto">
       <div className="flex items-center gap-3 p-4 border-b">
         <Image
           src="/branding/logo-hec-abidjan.png"

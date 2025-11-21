@@ -164,7 +164,7 @@ export async function listTransactions(params?: {
   let q = supabase
     .from("transactions")
     .select(
-      "id,t_type,t_date,amount,payment_method,notes,created_at,category_id, cost_center_id, categories(name), cost_centers(name)"
+      "id,t_type,t_date,amount,payment_method,notes,created_at,category_id,cost_center_id,specialty_id, categories(name), cost_centers(name), specialties(name)"
     )
     .order("t_date", { ascending: false });
 
