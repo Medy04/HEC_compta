@@ -51,8 +51,8 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors border-l-4",
                 active
-                  ? "border-[--sidebar-accent] bg-[--sidebar-primary] text-[--sidebar-primary-foreground]"
-                  : "border-transparent hover:bg-[--sidebar-accent]/10"
+                  ? "border-[--primary] bg-[--primary] text-[--primary-foreground]"
+                  : "border-transparent hover:bg-[--primary]/10"
               )}
             >
               <Icon size={18} />
