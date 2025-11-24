@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin, fetchTransactionsForExport } from "@/lib/supabase/queries-admin";
 import PDFDocument from "pdfkit";
+import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,8 +18,13 @@ export async function GET(req: Request) {
   doc.on("data", (c: any) => chunks.push(c as Buffer));
   const done = new Promise<Buffer>((resolve) => doc.on("end", () => resolve(Buffer.concat(chunks))));
 
-  doc.fontSize(16).text("Rapport des transactions" + (month ? ` — ${month}` : ""), { align: "center" });
-  doc.moveDown();
+  const title = "Bilan comptable HEC Abidjan" + (month ? ` — ${month}` : "");
+  const logoPath = path.join(process.cwd(), "public", "branding", "logo-hec-abidjan.png");
+  try {
+    doc.image(logoPath, 36, 24, { width: 40 });
+  } catch {}
+  doc.fontSize(18).text(title, 0, 28, { align: "center" });
+  doc.moveDown(2);
 
   // Table header
   doc.fontSize(10).text("Date", 36, doc.y, { continued: true, width: 60 });

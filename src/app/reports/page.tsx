@@ -122,7 +122,7 @@ export default function Page() {
     const win = window.open("", "_blank");
     if (!win) return;
     const [yyyy, mm] = month.split("-");
-    const title = `Bilan ${mm}/${yyyy}`;
+    const title = `Bilan comptable HEC Abidjan — ${mm}/${yyyy}`;
     const totalIncome = txns.reduce((s, t) => s + (t.t_type === "income" ? Number(t.amount || 0) : 0), 0);
     const totalExpense = txns.reduce((s, t) => s + (t.t_type === "expense" ? Number(t.amount || 0) : 0), 0);
     const balance = totalIncome - totalExpense;
@@ -176,8 +176,21 @@ export default function Page() {
       .join("");
 
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
-    <style>body{font-family:Arial,sans-serif;padding:16px} table{width:100%;border-collapse:collapse;margin-top:8px} th,td{border:1px solid #ddd;padding:6px;text-align:left} th{background:#f5f5f5}</style>
-    </head><body><h2>${title}</h2>
+    <style>
+      body{font-family:Arial,sans-serif;padding:16px}
+      .header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+      .header img{width:48px;height:48px}
+      .header h2{flex:1;text-align:center;margin:0}
+      table{width:100%;border-collapse:collapse;margin-top:8px}
+      th,td{border:1px solid #ddd;padding:6px;text-align:left}
+      th{background:#f5f5f5}
+    </style>
+    </head><body>
+    <div class="header">
+      <img src="/branding/logo-hec-abidjan.png" alt="HEC Abidjan" />
+      <h2>${title}</h2>
+      <div style="width:48px"></div>
+    </div>
     <h3>Totaux globaux</h3>
     <table><thead><tr><th>Total Entrées</th><th>Total Sorties</th><th>Solde</th></tr></thead><tbody>
       <tr><td>${totalIncome.toFixed(2)}</td><td>${totalExpense.toFixed(2)}</td><td>${balance.toFixed(2)}</td></tr>

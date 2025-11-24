@@ -30,6 +30,7 @@ export async function POST(req: Request) {
   const { email, password, role } = await req.json().catch(() => ({}));
   if (!email) return NextResponse.json({ error: "email is required" }, { status: 400 });
   const supa = createAdminClient();
+  const redirectTo = (process.env.NEXT_PUBLIC_SITE_URL ? `${process.env.NEXT_PUBLIC_SITE_URL}/login` : undefined);
   // invite or create user with password if provided
   let userId: string | null = null;
   if (password) {
@@ -37,8 +38,8 @@ export async function POST(req: Request) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     userId = data.user?.id ?? null;
   } else {
-    const { data, error } = await supa.auth.admin.inviteUserByEmail(email);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const { data, error } = await supa.auth.admin.inviteUserByEmail(email, redirectTo ? { redirectTo } : undefined as any);
+    if (error) return NextResponse.json({ error: `Invite failed: ${error.message}. Verify SMTP and Auth URL settings in Supabase.` }, { status: 500 });
     userId = data.user?.id ?? null;
   }
   if (userId && role) {

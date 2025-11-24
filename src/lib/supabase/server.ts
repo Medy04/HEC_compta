@@ -12,10 +12,11 @@ export function createClient() {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options });
+          cookieStore.set(name, value, options);
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: "", ...options });
+          // Clear cookie by setting empty value and maxAge=0
+          cookieStore.set(name, "", { ...options, maxAge: 0 });
         },
       },
     }
