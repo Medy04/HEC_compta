@@ -86,9 +86,9 @@ export function CostCenterSummary({ from, to }: { from?: string; to?: string }) 
               </thead>
               <tbody>
                 {rows.map((r) => {
-                  const income = (r.total_income ?? r.income ?? 0) as number;
-                  const expense = (r.total_expense ?? r.expense ?? 0) as number;
-                  const balance = (r.balance ?? (income - expense) ?? 0) as number;
+                  const income = Number(r.total_income ?? r.income ?? 0);
+                  const expense = Number(r.total_expense ?? r.expense ?? 0);
+                  const balance = Number.isFinite(r.balance) ? Number(r.balance) : Number(income - expense);
                   return (
                     <tr key={r.id ?? r.name}>
                       <td className="px-3 py-2">{r.name}</td>
