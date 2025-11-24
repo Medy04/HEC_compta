@@ -26,7 +26,7 @@ export default function LoginPage() {
       return;
     }
     notify({ variant: "success", title: "Bienvenue", description: email });
-    router.replace("/");
+    window.location.href = "/";
   }
 
   return (

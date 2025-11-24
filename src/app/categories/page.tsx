@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createCategory, listCategories, deleteCategory } from "@/lib/supabase/queries";
+import { createCategory, listCategories, deleteCategory, updateCategory } from "@/lib/supabase/queries";
 import { useToast } from "@/components/ui/ToastProvider";
 
 type Row = { id: string; name: string; type: "income" | "expense"; active: boolean; created_at: string };
@@ -92,21 +92,40 @@ export default function Page() {
                 <td className="px-3 py-2">{r.active ? "Active" : "Inactive"}</td>
                 <td className="px-3 py-2">{new Date(r.created_at).toLocaleDateString()}</td>
                 <td className="px-3 py-2 text-right">
-                  <Button
-                    size="sm"
-                    className="bg-red-100 text-red-700 hover:bg-red-200"
-                    onClick={async () => {
-                      if (!confirm(`Supprimer la catégorie \"${r.name}\" ?`)) return;
-                      const { error } = await deleteCategory(r.id);
-                      if (!error) {
-                        refresh();
-                      } else {
-                        alert(error.message);
-                      }
-                    }}
-                  >
-                    Supprimer
-                  </Button>
+                  <div className="flex items-center justify-end gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      onClick={async () => {
+                        const newName = prompt("Nouveau nom de la catégorie", r.name)?.trim();
+                        if (!newName) return;
+                        const newType = prompt("Type (income/expense)", r.type) as "income" | "expense" | null;
+                        const { error } = await updateCategory(r.id, { name: newName, type: newType === "income" || newType === "expense" ? newType : undefined });
+                        if (!error) {
+                          refresh();
+                        } else {
+                          alert(error.message);
+                        }
+                      }}
+                    >
+                      Modifier
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-red-100 text-red-700 hover:bg-red-200"
+                      onClick={async () => {
+                        if (!confirm(`Supprimer la catégorie \"${r.name}\" ?`)) return;
+                        const { error } = await deleteCategory(r.id);
+                        if (!error) {
+                          refresh();
+                        } else {
+                          alert(error.message);
+                        }
+                      }}
+                    >
+                      Supprimer
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

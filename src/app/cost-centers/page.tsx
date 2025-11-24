@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createCostCenter, listCostCenters, listCostCenterSummary, listSpecialtiesByCostCenter, createSpecialty, deleteSpecialty, deleteCostCenter, getCurrentRole } from "@/lib/supabase/queries";
+import { createCostCenter, listCostCenters, listCostCenterSummary, listSpecialtiesByCostCenter, createSpecialty, deleteSpecialty, deleteCostCenter, getCurrentRole, updateCostCenter } from "@/lib/supabase/queries";
 import { useToast } from "@/components/ui/ToastProvider";
 
 type Row = { id: string; name: string; code: string | null; created_at: string };
@@ -148,20 +148,38 @@ export default function Page() {
                 <td className="px-3 py-2">{new Date(r.created_at).toLocaleDateString()}</td>
                 <td className="px-3 py-2 text-right">
                   {role === "admin" && (
-                    <button
-                      className="px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 text-sm"
-                      onClick={async () => {
-                        if (!confirm(`Supprimer le centre de coûts "${r.name}" ?`)) return;
-                        const { error } = await deleteCostCenter(r.id);
-                        if (!error) {
-                          refresh();
-                        } else {
-                          alert(error.message);
-                        }
-                      }}
-                    >
-                      Supprimer
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        className="px-3 py-1.5 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 text-sm"
+                        onClick={async () => {
+                          const newName = prompt("Nouveau nom du centre", r.name)?.trim();
+                          if (!newName) return;
+                          const newCode = prompt("Code (optionnel)", r.code ?? "")?.trim() || null;
+                          const { error } = await updateCostCenter(r.id, { name: newName, code: newCode });
+                          if (!error) {
+                            refresh();
+                          } else {
+                            alert(error.message);
+                          }
+                        }}
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        className="px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 text-sm"
+                        onClick={async () => {
+                          if (!confirm(`Supprimer le centre de coûts "${r.name}" ?`)) return;
+                          const { error } = await deleteCostCenter(r.id);
+                          if (!error) {
+                            refresh();
+                          } else {
+                            alert(error.message);
+                          }
+                        }}
+                      >
+                        Supprimer
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>

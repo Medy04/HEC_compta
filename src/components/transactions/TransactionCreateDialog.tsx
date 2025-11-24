@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { listCategories, listCostCenters, createTransaction, listSpecialtiesByCostCenter } from "@/lib/supabase/queries";
+import { createClient as createSupabase } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/ToastProvider";
+import { Upload } from "lucide-react";
 
 export function TransactionCreateDialog(props: {
   open: boolean;
@@ -26,6 +28,7 @@ export function TransactionCreateDialog(props: {
   const [cats, setCats] = useState<Array<{ id: string; name: string; type: string }>>([]);
   const [centers, setCenters] = useState<Array<{ id: string; name: string }>>([]);
   const [saving, setSaving] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -59,6 +62,24 @@ export function TransactionCreateDialog(props: {
     if (!date || !amount) return;
     setSaving(true);
     const amt = Number(amount);
+    let attachmentNote = "";
+    try {
+      if (file) {
+        const supa = createSupabase();
+        const { data: userData } = await supa.auth.getUser();
+        const uid = userData?.user?.id ?? "anonymous";
+        const ext = file.name.split(".").pop() || "bin";
+        const path = `transactions/${uid}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const up = await supa.storage.from("attachments").upload(path, file, { cacheControl: "3600", upsert: false });
+        if (up.error) throw up.error;
+        const pub = supa.storage.from("attachments").getPublicUrl(path);
+        attachmentNote = `\nJustificatif: ${pub.data.publicUrl}`;
+      }
+    } catch (e: any) {
+      setSaving(false);
+      return notify({ variant: "destructive", title: "Upload échoué", description: e?.message || "Impossible de téléverser la pièce jointe (vérifiez le bucket 'attachments')." });
+    }
+
     const { error } = await createTransaction({
       t_type: type,
       t_date: date,
@@ -67,7 +88,7 @@ export function TransactionCreateDialog(props: {
       cost_center_id: costCenterId || null,
       specialty_id: specialtyId || null,
       payment_method: paymentMethod || null,
-      notes: notes || null,
+      notes: ((notes || "") + attachmentNote).trim() || null,
     } as any);
     setSaving(false);
     if (!error) {
@@ -75,6 +96,7 @@ export function TransactionCreateDialog(props: {
       props.onOpenChange(false);
       setAmount("");
       setNotes("");
+      setFile(null);
       props.onCreated?.();
     } else {
       notify({ variant: "destructive", title: "Erreur", description: error.message });
@@ -87,7 +109,7 @@ export function TransactionCreateDialog(props: {
         <DialogHeader>
           <DialogTitle>Nouvelle transaction</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <label className="block text-xs mb-1">Type</label>
             <Select value={type} onValueChange={(v) => setType(v as any)}>
@@ -154,14 +176,17 @@ export function TransactionCreateDialog(props: {
           </div>
           <div className="md:col-span-2">
             <label className="block text-xs mb-1">Notes</label>
-            <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes (optionnel)" />
+            <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optionnel" />
           </div>
-        </div>
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => props.onOpenChange(false)}>Annuler</Button>
-          <Button className="bg-[--primary] text-[--primary-foreground]" disabled={saving} onClick={submit}>
-            {saving ? "Enregistrement..." : "Enregistrer"}
-          </Button>
+          <div className="md:col-span-2">
+            <label className="flex items-center gap-2 text-xs mb-1"><Upload size={14} /> Pièce jointe (PDF/Image)</label>
+            <input type="file" accept="image/*,application/pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+          </div>
+          <div className="md:col-span-2">
+            <Button onClick={submit} disabled={saving} className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]">
+              {saving ? "Enregistrement..." : "Enregistrer"}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

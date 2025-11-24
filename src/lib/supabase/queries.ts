@@ -56,6 +56,11 @@ export async function deleteCategory(id: string) {
   return await supabase.from("categories").delete().eq("id", id);
 }
 
+export async function updateCategory(id: string, input: { name?: string; type?: "income" | "expense" }) {
+  const supabase = createBrowser();
+  return await supabase.from("categories").update(input).eq("id", id);
+}
+
 // COST CENTERS
 export async function listCostCenters() {
   const supabase = createBrowser();
@@ -70,6 +75,11 @@ export async function createCostCenter(input: { name: string; code?: string }) {
 export async function deleteCostCenter(id: string) {
   const supabase = createBrowser();
   return await supabase.from("cost_centers").delete().eq("id", id);
+}
+
+export async function updateCostCenter(id: string, input: { name?: string; code?: string | null }) {
+  const supabase = createBrowser();
+  return await supabase.from("cost_centers").update(input).eq("id", id);
 }
 
 export async function listCostCenterSummary() {

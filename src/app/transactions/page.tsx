@@ -134,6 +134,25 @@ export default function Page() {
                 <div className="text-muted-foreground text-xs">Notes</div>
                 <div className="whitespace-pre-wrap break-words">{detail.notes ?? "—"}</div>
               </div>
+              {(() => {
+                const m = typeof detail.notes === "string" ? detail.notes.match(/Justificatif:\s*(\S+)/) : null;
+                const url = m?.[1];
+                if (!url) return null;
+                const isImage = /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(url);
+                const isPdf = /\.pdf$/i.test(url);
+                return (
+                  <div className="md:col-span-2 space-y-2">
+                    <div className="text-muted-foreground text-xs">Pièce jointe</div>
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-[var(--primary)] hover:underline">Ouvrir la pièce jointe</a>
+                    <div className="mt-2">
+                      {isImage && <img src={url} alt="Justificatif" className="max-h-80 rounded border" />}
+                      {isPdf && (
+                        <iframe src={url} className="w-full h-80 border rounded" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           )}
         </DialogContent>
