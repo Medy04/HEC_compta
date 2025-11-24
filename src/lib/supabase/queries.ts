@@ -67,6 +67,11 @@ export async function createCostCenter(input: { name: string; code?: string }) {
   return await supabase.from("cost_centers").insert({ name: input.name, code: input.code ?? null });
 }
 
+export async function deleteCostCenter(id: string) {
+  const supabase = createBrowser();
+  return await supabase.from("cost_centers").delete().eq("id", id);
+}
+
 export async function listCostCenterSummary() {
   const supabase = createBrowser();
   return await supabase

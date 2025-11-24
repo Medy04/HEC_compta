@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "HEC Abidjan — Comptabilité",
   description: "Tableau de bord et gestion comptable",
+  icons: {
+    icon: "/branding/logo-hec-abidjan.png",
+    shortcut: "/branding/logo-hec-abidjan.png",
+    apple: "/branding/logo-hec-abidjan.png",
+  },
 };
 
 export default function RootLayout({
