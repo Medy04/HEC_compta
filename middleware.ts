@@ -1,30 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  // Allow public paths
-  if (
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/branding") ||
-    pathname === "/favicon.ico"
-  ) {
-    return NextResponse.next();
-  }
-
-  // Check Supabase auth cookies set by @supabase/ssr
-  const hasAccess = Boolean(req.cookies.get("sb-access-token")?.value);
-  const hasRefresh = Boolean(req.cookies.get("sb-refresh-token")?.value);
-
-  if (!hasAccess && !hasRefresh) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirectedFrom", pathname);
-    return NextResponse.redirect(url);
-  }
-
+export function middleware(_req: NextRequest) {
+  // Temporarily disable auth redirection in middleware because client-side login
+  // stores session in localStorage (not cookies), which middleware cannot read.
+  // Server/API routes already enforce authorization.
   return NextResponse.next();
 }
 
